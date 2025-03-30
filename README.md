@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="img/logo.png" alt="logo" width="400"/>
-</p>
+> **Forked from [typslides](https://github.com/manjavacas/typslides).**
 
 <p align="center">
     <img src="https://img.shields.io/badge/license-GPLv3-blue" alt="License">
@@ -105,7 +103,3 @@ This is a simple usage example:
 #let bib = bibliography("bibliography.bib")
 #bibliography-slide(bib)
 ```
-
-# Sample slides
-
-<kbd><img src="img/slide-1.svg" width="300"></kbd> <kbd><img src="img/slide-2.svg" width="300"></kbd> <kbd><img src="img/slide-3.svg" width="300"></kbd> <kbd><img src="img/slide-4.svg" width="300"></kbd> <kbd><img src="img/slide-5.svg" width="300"></kbd> <kbd><img src="img/slide-6.svg" width="300"></kbd> <kbd><img src="img/slide-7.svg" width="300"></kbd> <kbd><img src="img/slide-8.svg" width="300"></kbd> <kbd><img src="img/slide-9.svg" width="300"></kbd>

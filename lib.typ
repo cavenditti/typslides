@@ -3,6 +3,7 @@
   front-slide,
   table-of-contents,
   title-slide,
+  section,
   cols,
   slide,
   focus-slide,
@@ -17,4 +18,10 @@
   yelly,
   purply,
   dusky,
+  dusty,
+  blue,
+  darkblue,
+  red,
+  dusk,
+  darker,
 )

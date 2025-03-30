@@ -1,51 +1,36 @@
 #import "utils.typ": *
 
+#let default-font = state("font", none)
 #let theme-color = state("theme-color", none)
+#let background-color = state("background-color", _theme-colors.at("darky"))
 #let sections = state("sections", ())
+#let logo-img = state("logo", none)
+#let alt-img = state("logo-alt", none)
 
-#let typslides(
-  ratio: "16-9",
-  theme: "bluey",
-  body,
-) = {
-  theme-color.update(_theme-colors.at(theme))
-
-  set text(font: "Fira Sans")
-  set page(paper: "presentation-" + ratio, fill: white)
-
-  show ref: it => (
-    context {
-      text(fill: theme-color.get())[#it]
-    }
-  )
-
-  show link: it => (
-    context {
-      text(fill: theme-color.get())[#it]
-    }
-  )
-
-  show footnote: it => (
-    context {
-      text(fill: theme-color.get())[#it]
-    }
-  )
-
-  set enum(numbering: (it => context text(fill: black)[*#it.*]))
-
-  body
-}
 
 //*************************************** Aux functions ***************************************\\
 
-// Theme colors
+// LAIF colors
 
-#let bluey(body) = (text(fill: rgb("3059AB"))[#body])
-#let greeny(body) = (text(fill: rgb("BF3D3D"))[#body])
-#let reddy(body) = (text(fill: rgb("28842F"))[#body])
-#let yelly(body) = (text(fill: rgb("C4853D"))[#body])
-#let purply(body) = (text(fill: rgb("862A70"))[#body])
-#let dusky(body) = (text(fill: rgb("1F4289"))[#body])
+#let blue = _theme-colors.at("bluey")
+#let darkblue = _theme-colors.at("darkbluey")
+#let red = _theme-colors.at("reddy")
+#let dusk = _theme-colors.at("darky")
+#let darker = _theme-colors.at("darker")
+
+#let bluey(body) = (text(fill: _theme-colors.at("bluey"))[#body])
+#let darkbluey(body) = (text(fill: _theme-colors.at("darkbluey"))[#body])
+#let reddy(body) = (text(fill: _theme-colors.at("reddy"))[#body])
+#let dusky(body) = (text(fill: _theme-colors.at("darky"))[#body])
+#let darker(body) = (text(fill: _theme-colors.at("darker"))[#body])
+
+// Other
+
+#let greeny(body) = (text(fill: _theme-colors.at("greeny"))[#body])
+#let purply(body) = (text(fill: _theme-colors.at("purply"))[#body])
+#let dusty(body) = (text(fill: _theme-colors.at("dusty"))[#body])
+#let yelly(body) = (text(fill: _theme-colors.at("yelly"))[#body])
+
 
 //***************************************************\\
 
@@ -70,10 +55,10 @@
       breakable: false,
       above: .1cm,
       below: .1cm,
+      width: 100%,
     )
 
     if title != none {
-      set block(width: 100%)
       stack(
         block(
           fill: theme-color.get(),
@@ -99,7 +84,6 @@
     } else {
       stack(
         block(
-          width: auto,
           fill: if back-color != none {
             back-color
           } else {
@@ -166,6 +150,90 @@
   }
 )
 
+//**************************************** Ending Slide ****************************************\\
+
+#let ending-slide(
+  text-color: white,
+  text-size: 12pt,
+  website-url: none,
+  email: none,
+) = (
+  context {
+    set page(fill: background-color.get())
+
+    set text(
+      weight: "semibold",
+      size: text-size,
+      fill: text-color,
+      font: default-font.get(),
+    )
+
+    set align(center + horizon)
+
+
+    v(5em)
+
+    logo-img.get()
+
+    v(7em)
+
+    if website-url != none {
+      _resize-text(link(website-url)[#text(fill: white)[#website-url.replace("https://", "")]])
+    }
+    if email != none {
+      _resize-text(link("mailto:" + email)[#text(fill: blue)[#email]])
+    }
+  }
+)
+
+#let typslides(
+  logo: text(""),
+  logo-alt: text(""),
+  website-url: none,
+  email: none,
+  ratio: "16-9",
+  theme: "bluey",
+  background: "darky",
+  with-ending: true,
+  font: "Fira Sans",
+  body,
+) = {
+  theme-color.update(_theme-colors.at(theme))
+  background-color.update(_theme-colors.at(background))
+  logo-img.update(logo)
+  alt-img.update(logo-alt)
+  default-font.update(font)
+
+  set text(font: font, fill: _theme-colors.at("darky"))
+  set page(paper: "presentation-" + ratio, fill: white)
+
+  show ref: it => (
+    context {
+      text(fill: theme-color.get())[#it]
+    }
+  )
+
+  show link: it => (
+    context {
+      text(fill: theme-color.get())[#it]
+    }
+  )
+
+  show footnote: it => (
+    context {
+      text(fill: theme-color.get())[#it]
+    }
+  )
+
+  set enum(numbering: (it => context text(fill: background-color.get())[*#it.*]))
+
+  body
+
+  if with-ending {
+    ending-slide(website-url: website-url, email: email)
+  }
+}
+
 //**************************************** Front Slide ****************************************\\
 
 #let front-slide(
@@ -181,6 +249,9 @@
       authors,
       info,
       theme-color.get(),
+      background-color.get(),
+      logo-img.get(),
+      alt-img.get(),
     )
   }
 )
@@ -230,11 +301,14 @@
   }
 )
 
+// title-slide alias
+#let section = title-slide
+
 //**************************************** Focus Slide ****************************************\\
 
 #let focus-slide(
   text-color: white,
-  text-size: 60pt,
+  text-size: 36pt,
   body,
 ) = (
   context {
@@ -244,7 +318,7 @@
       weight: "semibold",
       size: text-size,
       fill: text-color,
-      font: "Fira Sans",
+      font: default-font.get(),
     )
 
     set align(center + horizon)
@@ -268,11 +342,7 @@
 
     set page(
       fill: back-color,
-      header-ascent: if title != none {
-        65%
-      } else {
-        66%
-      },
+      header-ascent: 65%,
       header: [
         #align(right)[
           #text(
@@ -282,12 +352,8 @@
           )[#page-num]
         ]
       ],
-      margin: if title != none {
-        (x: 1.6cm, top: 2.5cm, bottom: 1.2cm)
-      } else {
-        (x: 1.6cm, top: 1.75cm, bottom: 1.2cm)
-      },
-      background: place(_slide-header(title, theme-color.get())),
+      margin: (x: 1.6cm, top: 2.5cm, bottom: 1.2cm),
+      background: place(_slide-header(title, background-color.get(), logo-img.get())),
     )
 
     set list(marker: text(theme-color.get(), [•]))

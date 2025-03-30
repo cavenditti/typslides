@@ -1,11 +1,13 @@
 #let _theme-colors = (
-  bluey: rgb("3059AB"),
-  reddy: rgb("BF3D3D"),
-  greeny: rgb("28842F"),
+  bluey: rgb("5fd3bc"),
+  darkbluey: rgb("51B4C5"),
+  reddy: rgb("EB576A"),
+  greeny: rgb("4CCC61"),
+  dusty: rgb("EAE3D0"),
   yelly: rgb("C4853D"),
   purply: rgb("862A70"),
-  dusky: rgb("1F4289"),
-  darky: black,
+  darky: rgb("505050"),
+  darker: rgb("333333"),
 )
 
 //************************************************************************\\
@@ -43,17 +45,20 @@
 
 //************************************************************************\\
 
-#let _slide-header(title, color) = {
+#let _slide-header(title, color, logo) = {
   rect(
     fill: color,
     width: 100%,
-    height: if title != none {
-      1.6cm
-    } else {
-      .95cm
-    },
+    height: 1.6cm,
     inset: .6cm,
-    text(white, weight: "semibold", size: 24pt)[#h(.1cm) #title],
+    text(white, weight: "semibold", size: 24pt)[
+      #grid(
+      columns: (1fr, 60pt, 90pt),
+      gutter: 3pt,
+      title,
+      scale(15%, logo),
+      )
+  ],
   )
 }
 
@@ -65,17 +70,40 @@
   authors,
   info,
   theme-color,
+  background-color,
+  logo,
+  logo-alt,
 ) = {
 
   set align(left + horizon)
   set page(footer: none)
+  set page(fill: background-color)
 
-  text(40pt, weight: "bold")[#smallcaps(title)]
+  v(-.95cm)
+
+  let behind(..args) = {
+    v(-1.95cm)
+    h(-2.95cm)
+    box(place(..args))
+    sym.wj
+    h(0pt, weak: true)
+  }
+
+  grid(
+    columns: (6fr, 1fr),
+    gutter: 30pt,
+    logo,
+    behind(logo-alt),
+  )
+
+  v(0.95cm)
+
+  text(36pt, weight: "bold", fill: white)[#smallcaps(title)]
 
   v(-.95cm)
 
   if subtitle != none {
-    set text(24pt)
+    set text(24pt, fill: white)
     v(.1cm)
     subtitle
   }
@@ -83,7 +111,7 @@
   let subtext = []
 
   if authors != none {
-    subtext += text(22pt, weight: "regular")[#authors]
+    subtext += text(22pt, weight: "regular", fill: white)[#authors]
   }
 
   if info != none {
